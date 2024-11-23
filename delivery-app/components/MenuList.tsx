@@ -8,18 +8,23 @@ import {
   StyleSheet,
   TextInput,
 } from "react-native";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, getDoc } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import Icon from "react-native-vector-icons/Ionicons"; // สำหรับไอคอน
 
 const MenuListScreen = ({ navigation }) => {
-  const mockRestaurantId = 1; // ใช้ตัวเลข (Integer)
+  const mockRestaurantId = 2; // ใช้ตัวเลข (Integer)
   const [menuItems, setMenuItems] = useState([]);
+  const [restaurantInfo, setRestaurantInfo] = useState(null); // เก็บข้อมูลร้านอาหาร
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [cartItems, setCartItems] = useState([]); // รายการในตะกร้า
 
   useEffect(() => {
+    // รีเซ็ตตะกร้าสินค้าเมื่อเปลี่ยนร้านอาหาร
+    setCartItems([]);
+
+    // ดึงข้อมูลเมนู
     const fetchMenuItems = async () => {
       try {
         const q = query(
@@ -33,20 +38,38 @@ const MenuListScreen = ({ navigation }) => {
         } else {
           const data = querySnapshot.docs.map((doc) => ({
             id: doc.id,
-            quantity: 0, // เพิ่มฟิลด์ quantity เริ่มต้นเป็น 0
+            quantity: 0,
             ...doc.data(),
           }));
           setMenuItems(data);
         }
       } catch (error) {
         console.error("Error fetching menu items:", error);
+      }
+    };
+
+    // ดึงข้อมูลร้านอาหาร
+    const fetchRestaurantInfo = async () => {
+      try {
+        const docRef = doc(db, "restaurants", mockRestaurantId.toString());
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          setRestaurantInfo(docSnap.data());
+        } else {
+          console.log("Restaurant not found!");
+          setRestaurantInfo(null);
+        }
+      } catch (error) {
+        console.error("Error fetching restaurant info:", error);
       } finally {
         setLoading(false);
       }
     };
 
     fetchMenuItems();
-  }, []);
+    fetchRestaurantInfo();
+  }, [mockRestaurantId]);
 
   const filteredMenuItems = menuItems.filter((item) =>
     item.Name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -69,42 +92,46 @@ const MenuListScreen = ({ navigation }) => {
   const updateQuantity = (item, increment) => {
     const updatedItems = menuItems.map((menuItem) =>
       menuItem.id === item.id
-        ? { ...menuItem, quantity: Math.max(0, menuItem.quantity + increment) } // ไม่ให้ติดลบ
+        ? { ...menuItem, quantity: Math.max(0, menuItem.quantity + increment) }
         : menuItem
     );
     setMenuItems(updatedItems);
   };
 
   const goToCart = () => {
-    navigation.navigate("CartScreen", { cartItems }); // ส่งข้อมูลตะกร้าไปยังหน้า Cart
+    navigation.navigate("CartScreen", { cartItems });
   };
 
   if (loading) {
     return (
       <View style={styles.centered}>
-        <Text>Loading menu items...</Text>
+        <Text>Loading...</Text>
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      {/* ส่วนแสดงข้อมูลร้านอาหาร */}
-      <View style={styles.restaurantHeader}>
-        <Image
-          source={{
-            uri: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1b/78/9b/f9/2-1100-1500-1700-2200.jpg?w=600&h=600&s=1",
-          }}
-          style={styles.restaurantImage}
-        />
-        <View style={styles.restaurantInfo}>
-          <Text style={styles.restaurantName}>Baiyoke Delivery</Text>
-          <Text style={styles.restaurantLocation}>Thanon Ratchaprarop</Text>
-          <Text style={styles.restaurantRating}>⭐ 4.5 (357 Reviews)</Text>
+      {restaurantInfo ? (
+        <View style={styles.restaurantHeader}>
+          <Image
+            source={{ uri: restaurantInfo.ImageURL || "https://via.placeholder.com/150" }}
+            style={styles.restaurantImage}
+          />
+          <View style={styles.restaurantInfo}>
+            <Text style={styles.restaurantName}>{restaurantInfo.Name}</Text>
+            <Text style={styles.restaurantLocation}>
+              {restaurantInfo.ShortLocation || "No location available"}
+            </Text>
+            <Text style={styles.restaurantRating}>
+              ⭐ {restaurantInfo.Rating} ({restaurantInfo.Reviews} Reviews)
+            </Text>
+          </View>
         </View>
-      </View>
+      ) : (
+        <Text>Restaurant info not available</Text>
+      )}
 
-      {/* ไอคอนตะกร้าสินค้า */}
       <TouchableOpacity style={styles.cartIcon} onPress={goToCart}>
         <Icon name="cart-outline" size={30} color="#000" />
         {cartItems.length > 0 && (
@@ -112,7 +139,6 @@ const MenuListScreen = ({ navigation }) => {
         )}
       </TouchableOpacity>
 
-      {/* แถบค้นหา */}
       <TextInput
         style={styles.searchBar}
         placeholder="Search Menus"
@@ -121,7 +147,6 @@ const MenuListScreen = ({ navigation }) => {
         onChangeText={setSearchTerm}
       />
 
-      {/* รายการสินค้า */}
       <FlatList
         data={filteredMenuItems}
         renderItem={({ item }) => (
