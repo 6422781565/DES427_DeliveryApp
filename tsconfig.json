@@ -1,10 +1,6 @@
 {
-<<<<<<< HEAD
   "compilerOptions": {
     "strict": true
   },
-=======
-  "compilerOptions": {},
->>>>>>> menus2
   "extends": "expo/tsconfig.base"
 }

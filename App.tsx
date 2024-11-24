@@ -9,7 +9,6 @@ import SignUpPage from "./delivery-app/components/SignUpPage";
 import ProfileCreationPage from "./delivery-app/components/ProfileCreationPage";
 import HomePage from "./delivery-app/components/HomePage";
 
-//import MenuListScreen from "./delivery-app/components/MenuList"; // นำเข้า MenuListScreen (เปลี่ยนชื่อไฟล์)
 
 export type RootStackParamList = {
   LoginPage: undefined;
