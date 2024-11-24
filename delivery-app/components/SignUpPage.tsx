@@ -33,7 +33,7 @@ const SignUpPage: React.FC = () => {
 
       // Save user session to AsyncStorage
       await AsyncStorage.setItem("userToken", userCredential.user.uid);
-      navigation.navigate("ProfileCreationPage");
+      navigation.navigate("HomePage");
 
     } catch (error) {
       if (error instanceof Error) {

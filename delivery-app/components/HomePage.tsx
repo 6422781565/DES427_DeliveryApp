@@ -13,12 +13,6 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import updatedRestaurants from '../../data/Updated_Restaurants.json';
-import { RootStackParamList } from '../../App';
-import users from '../../data/users.json';
-
-interface RouteParams {
-  userId: string;
-}
 
 interface Banner {
   id: string;
@@ -38,10 +32,8 @@ const { width: screenWidth } = Dimensions.get('window');
 const bannerWidth = screenWidth * 0.9;
 const bannerHeight = 200;
 
+
 const HomePage: React.FC = () => {
-  const route = useRoute<RouteProp<RootStackParamList, 'HomePage'>>(); 
-  const { userId } = route.params || {}; 
-  const [userName, setUserName] = useState('John Smith');
   const [searchTerm, setSearchTerm] = useState('');
   const navigation = useNavigation();
   const bannerFlatListRef = useRef<FlatList>(null);
@@ -69,22 +61,6 @@ const HomePage: React.FC = () => {
     { id: '5', image: require('../assets/banner5.jpeg') },
   ];
 
-  // Simulate fetching user data
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const user = users.find((user) => user.UserID === userId);
-        if (user) {
-          setUserName(user.Name);
-        }
-      } catch (error) {
-        console.error('Failed to fetch user data:', error);
-        // Default value "John Smith" will be used
-      }
-    };
-
-    fetchUserData();
-  }, [userId]);
 
   // Auto-slide functionality
   useEffect(() => {
@@ -105,15 +81,25 @@ const HomePage: React.FC = () => {
     }
   }, [currentBannerIndex]);
 
+  // Handle Logout
+  const handleLogout = () => {
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'LoginPage' }],
+    });
+  };
+
   return (
     <View style={styles.container}>
       {/* Fixed Greeting Header */}
       <View style={styles.header}>
         <View>
-          <Text style={styles.greeting}>Good Afternoon</Text>
-          <Text style={styles.username}>{userName}</Text> 
+          <Text style={styles.greeting}>Good Afternoon!</Text>
+          <Text style={styles.slogan}>Ready to satisfy your cravings today?</Text> 
         </View>
-        <Ionicons name="person-circle-outline" size={70} color="#E0632E" />
+        <TouchableOpacity onPress={handleLogout}>
+          <Ionicons name="log-out-outline" size={50} color="#E0632E" />
+        </TouchableOpacity>
       </View>
 
       {/* Scrollable Content */}
@@ -210,12 +196,12 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0,
   },
   greeting: {
-    fontSize: 15,
+    fontSize: 38,
     fontWeight: 'bold',
     color: '#555',
   },
-  username: {
-    fontSize: 35,
+  slogan: {
+    fontSize: 25,
     fontWeight: 'bold',
     color: '#E0632E',
     marginBottom: 10,
@@ -268,7 +254,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 10,
     shadowColor: '#000',
-    shadowOpacity: 0.15,
+    shadowOpacity: 0.2,
     shadowRadius: 5,
     elevation: 2,
   },
@@ -317,7 +303,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     backgroundColor: '#fff',
-    paddingVertical: 10,
+    paddingVertical: 20,
     borderTopWidth: 1,
     borderTopColor: '#eee',
   },
