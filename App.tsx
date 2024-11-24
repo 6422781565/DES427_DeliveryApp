@@ -3,7 +3,6 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View } from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-//import { AuthProvider } from './utils/AuthProvider';
 import LoginPage from "./delivery-app/components/LoginPage";
 import SignUpPage from "./delivery-app/components/SignUpPage";
 import ProfileCreationPage from "./delivery-app/components/ProfileCreationPage";
@@ -14,7 +13,7 @@ export type RootStackParamList = {
   LoginPage: undefined;
   SignUpPage: undefined;
   ProfileCreationPage: undefined;
-  HomePage: undefined;
+  HomePage: { userId: string }; 
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -23,8 +22,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <View style={styles.container}>
-        {/*<MenuListScreen />  Display MenuListScreen */}
-        <Stack.Navigator initialRouteName="HomePage">
+        <Stack.Navigator initialRouteName="LoginPage">
         <Stack.Screen
           name="LoginPage"
           component={LoginPage}
@@ -57,6 +55,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    paddingTop: 50, // เพิ่ม Padding เพื่อเว้นพื้นที่ด้านบน
+    paddingTop: 50, 
   },
 });
