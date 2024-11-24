@@ -4,8 +4,6 @@ import { useForm, Controller } from 'react-hook-form';
 import { useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../../App'; 
 
-
-
 interface ProfileFormData {
   firstName: string;
   lastName: string;

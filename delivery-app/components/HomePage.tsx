@@ -1,22 +1,40 @@
 import React from 'react';
 import { View, Text, TextInput, StyleSheet, Image, FlatList, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { collection, query, getDocs } from "firebase/firestore";
+import { db } from "../firebaseConfig";
 
+// Define type for banners
+interface Banner {
+  id: string;
+  image: any; // For `require` images
+}
+
+// Define type for restaurants
+interface Restaurant {
+  id: string;
+  name: string;
+  address: string;
+  rating: number;
+  reviews: number;
+  deliveryFee: string;
+  image: string;
+}
 
 const { width: screenWidth } = Dimensions.get('window');
-const bannerWidth = screenWidth * 0.9; // Adjust the multiplier to fit your banner size
+const bannerWidth = screenWidth * 0.9;
 const bannerHeight = 200;
 
 const HomePage: React.FC = () => {
+  // Banner data with types
+  const banners: Banner[] = [
+    { id: '1', image: require('../assets/banner1.jpeg') },
+    { id: '2', image: require('../assets/banner2.jpeg') },
+    { id: '3', image: require('../assets/banner3.jpeg') },
+  ];
 
-
-    const banners = [
-        { id: '1', image: require('../assets/banner1.jpeg') },
-        { id: '2', image: require('../assets/banner2.jpeg') },
-        { id: '3', image: require('../assets/banner3.jpeg') },
-      ];
-
-  const restaurants = [
+  // Restaurant data with types
+  const restaurants: Restaurant[] = [
     {
       id: '1',
       name: 'Baiyoke Delivery',
@@ -52,24 +70,23 @@ const HomePage: React.FC = () => {
       {/* Scrollable Content */}
       <ScrollView style={styles.scrollableContent}>
         {/* Horizontal Scrolling Banner */}
-        
         <FlatList
-            data={banners}
-            keyExtractor={(item) => item.id}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            pagingEnabled // Ensure one banner per scroll
-            renderItem={({ item }) => (
-                <View style={[styles.bannerWrapper]}>
-                <Image
-                    source={item.image}
-                    style={[styles.bannerImage, { width: bannerWidth, height: bannerHeight }]}
-                    resizeMode="cover" // Adjust if needed
-                />
-                </View>
-            )}
-            contentContainerStyle={styles.bannerContainer}
-            />
+          data={banners}
+          keyExtractor={(item) => item.id}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          pagingEnabled // Ensure one banner per scroll
+          renderItem={({ item }) => (
+            <View style={[styles.bannerWrapper]}>
+              <Image
+                source={item.image}
+                style={[styles.bannerImage, { width: bannerWidth, height: bannerHeight }]}
+                resizeMode="cover"
+              />
+            </View>
+          )}
+          contentContainerStyle={styles.bannerContainer}
+        />
 
         {/* Search Bar */}
         <View style={styles.searchContainer}>
@@ -121,10 +138,10 @@ const HomePage: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        },
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -142,8 +159,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: 'bold',
     color: '#f7931e',
-    marginBottom: 10
-
+    marginBottom: 10,
   },
   address: {
     fontSize: 13,
@@ -153,12 +169,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   bannerWrapper: {
-    width: screenWidth, 
+    width: screenWidth,
     justifyContent: 'center',
-    alignItems: 'center', 
+    alignItems: 'center',
   },
   bannerImage: {
-    width: bannerWidth, 
+    width: bannerWidth,
     height: bannerHeight,
     overflow: 'hidden',
   },

@@ -4,6 +4,10 @@ import { useForm, Controller } from 'react-hook-form';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../App'; 
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebaseConfig";
+
 interface SignUpFormData {
   email: string;
   password: string;
@@ -16,14 +20,30 @@ const SignUpPage: React.FC = () => {
 
   const password = watch('password');
   
-  const onSubmit = (data: SignUpFormData) => {
-    //if (data.password !== data.confirmPassword) {
-    //  alert('Passwords do not match!');
-    //  return;
-    //}
-    console.log('Sign Up Data:', data);
-    console.log('Navigating to ProfileCreationPage');
-    navigation.navigate('ProfileCreationPage');
+  const onSubmit = async (data: SignUpFormData) => {
+    if (data.password !== data.confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+
+    try {
+      // Firebase Authentication - Create User
+      const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
+      console.log("Sign Up successful:", userCredential.user);
+
+      // Save user session to AsyncStorage
+      await AsyncStorage.setItem("userToken", userCredential.user.uid);
+      navigation.navigate("ProfileCreationPage");
+
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error("Sign Up error:", error.message);
+        alert("Error creating account: " + error.message);
+      } else {
+        console.error("Unexpected error:", error);
+        alert("An unexpected error occurred during signup.");
+      }
+    }
   };
 
   return (
@@ -102,7 +122,7 @@ const SignUpPage: React.FC = () => {
         <TouchableOpacity
             style={styles.button}
             onPress={handleSubmit(onSubmit, (errors) => {
-                console.log('Validation Errors:', errors); // Log errors for debugging
+                console.log('Validation Errors:', errors); 
               })}
         >
         <Text style={styles.buttonText}>Sign Up</Text>

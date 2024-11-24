@@ -1,8 +1,12 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from "../../App";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
+import { auth } from "../firebaseConfig";
 
 interface LoginFormData {
   email: string;
@@ -10,14 +14,54 @@ interface LoginFormData {
 }
 
 const LoginPage: React.FC = () => {
-  const { control, handleSubmit } = useForm<LoginFormData>();
+  const { control, handleSubmit, getValues } = useForm<LoginFormData>();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  const onSubmit = (data: LoginFormData) => {
-    console.log('Login Data:', data);
-    console.log('Login press');
-    navigation.navigate('HomePage'); 
+  const onSubmit = async (data: LoginFormData) => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
+      console.log("Login successful:", userCredential.user);
+
+      // Save user session to AsyncStorage
+      await AsyncStorage.setItem("userToken", userCredential.user.uid);
+      navigation.navigate("HomePage");
+
+    } catch (error) {
+        if (error instanceof Error) {
+          console.error("Login error:", error.message);
+          Alert.alert("Login Failed", "Invalid email or password: " + error.message);
+        } else {
+          console.error("Unexpected error:", error);
+          Alert.alert("An unexpected error occurred");
+        }
+    }
   };
+
+  // Handle forgot password
+  const handleForgotPassword = async () => {
+    const email = getValues("email");
+    if (!email) {
+      Alert.alert("Error", "Please enter your email to reset your password.");
+      return;
+    }
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+      Alert.alert(
+        "Password Reset",
+        "A password reset email has been sent to your email address."
+      );
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error("Forgot Password error:", error.message);
+        Alert.alert("Error", "Failed to send password reset email: " + error.message);
+      } else {
+        console.error("Unexpected error:", error);
+        Alert.alert("An unexpected error occurred");
+      }
+    }
+  };
+
 
   return (
     <View style={styles.container}>
@@ -27,7 +71,7 @@ const LoginPage: React.FC = () => {
       <Controller
         name="email"
         control={control}
-        rules={{ required: true }}
+        rules={{ required: "Email is required" }}
         render={({ field: { onChange, value } }) => (
           <TextInput
             style={styles.input}
@@ -38,11 +82,12 @@ const LoginPage: React.FC = () => {
           />
         )}
       />
+
       <Text style={styles.label}>Password</Text>
       <Controller
         name="password"
         control={control}
-        rules={{ required: true }}
+        rules={{ required: "Password is required" }}
         render={({ field: { onChange, value } }) => (
           <TextInput
             style={styles.input}
@@ -54,7 +99,7 @@ const LoginPage: React.FC = () => {
         )}
       />
 
-      <TouchableOpacity style={styles.forgotPassword}>
+      <TouchableOpacity style={styles.forgotPassword} onPress={handleForgotPassword}>
         <Text style={styles.forgotText}>Forgot Password?</Text>
       </TouchableOpacity>
 
