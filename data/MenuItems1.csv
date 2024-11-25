@@ -1,0 +1,101 @@
+MenuItemID,RestaurantID,Name,Price
+1,1,Pad Thai,250
+2,1,Grilled Prawns,350
+3,1,Steak,200
+4,1,Sashimi,450
+5,1,Tom Yum,300
+6,1,Green Curry,220
+7,1,Fried Rice,180
+8,1,Papaya Salad,150
+9,1,Crispy Pork,270
+10,1,BBQ Chicken,320
+11,2,Pad Thai,250
+12,2,Grilled Prawns,350
+13,2,Steak,200
+14,2,Sashimi,450
+15,2,Tom Yum,300
+16,2,Green Curry,220
+17,2,Fried Rice,180
+18,2,Papaya Salad,150
+19,2,Crispy Pork,270
+20,2,BBQ Chicken,320
+21,3,Pad Thai,250
+22,3,Grilled Prawns,350
+23,3,Steak,200
+24,3,Sashimi,450
+25,3,Tom Yum,300
+26,3,Green Curry,220
+27,3,Fried Rice,180
+28,3,Papaya Salad,150
+29,3,Crispy Pork,270
+30,3,BBQ Chicken,320
+31,4,Pad Thai,250
+32,4,Grilled Prawns,350
+33,4,Steak,200
+34,4,Sashimi,450
+35,4,Tom Yum,300
+36,4,Green Curry,220
+37,4,Fried Rice,180
+38,4,Papaya Salad,150
+39,4,Crispy Pork,270
+40,4,BBQ Chicken,320
+41,5,Pad Thai,250
+42,5,Grilled Prawns,350
+43,5,Steak,200
+44,5,Sashimi,450
+45,5,Tom Yum,300
+46,5,Green Curry,220
+47,5,Fried Rice,180
+48,5,Papaya Salad,150
+49,5,Crispy Pork,270
+50,5,BBQ Chicken,320
+51,6,Pad Thai,250
+52,6,Grilled Prawns,350
+53,6,Steak,200
+54,6,Sashimi,450
+55,6,Tom Yum,300
+56,6,Green Curry,220
+57,6,Fried Rice,180
+58,6,Papaya Salad,150
+59,6,Crispy Pork,270
+60,6,BBQ Chicken,320
+61,7,Pad Thai,250
+62,7,Grilled Prawns,350
+63,7,Steak,200
+64,7,Sashimi,450
+65,7,Tom Yum,300
+66,7,Green Curry,220
+67,7,Fried Rice,180
+68,7,Papaya Salad,150
+69,7,Crispy Pork,270
+70,7,BBQ Chicken,320
+71,8,Pad Thai,250
+72,8,Grilled Prawns,350
+73,8,Steak,200
+74,8,Sashimi,450
+75,8,Tom Yum,300
+76,8,Green Curry,220
+77,8,Fried Rice,180
+78,8,Papaya Salad,150
+79,8,Crispy Pork,270
+80,8,BBQ Chicken,320
+81,9,Pad Thai,250
+82,9,Grilled Prawns,350
+83,9,Steak,200
+84,9,Sashimi,450
+85,9,Tom Yum,300
+86,9,Green Curry,220
+87,9,Fried Rice,180
+88,9,Papaya Salad,150
+89,9,Crispy Pork,270
+90,9,BBQ Chicken,320
+91,10,Pad Thai,250
+92,10,Grilled Prawns,350
+93,10,Steak,200
+94,10,Sashimi,450
+95,10,Tom Yum,300
+96,10,Green Curry,220
+97,10,Fried Rice,180
+98,10,Papaya Salad,150
+99,10,Crispy Pork,270
+100,10,BBQ Chicken,320
