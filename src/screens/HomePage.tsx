@@ -11,9 +11,8 @@ import {
   Dimensions,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import updatedRestaurants from '../../data/Updated_Restaurants.json';
-import { StackNavigationProp } from '@react-navigation/stack';
 
 interface Banner {
   id: string;

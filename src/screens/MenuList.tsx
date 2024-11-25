@@ -11,7 +11,7 @@ import {
 import { collection, query, where, getDocs, doc, getDoc } from "firebase/firestore";
 import { db } from "../config/firebaseConfig";
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const MenuList: React.FC = () => {
   const [menuItems, setMenuItems] = useState([]);

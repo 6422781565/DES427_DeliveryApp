@@ -15,11 +15,8 @@ const OrderConfirmation = () => {
 
   const [startTimer, setStartTimer] = useState(false);
   const [distance, setDistance] = useState(0); // Distance in km
-  const [ETA, setETA] = useState(0); // Estimated Time in minutes
   const [initialTime, setInitialTime] = useState(0); // Initial time in seconds
   const [timeRemaining, setTimeRemaining] = useState(0); // Remaining time in seconds
-
-  // Distance = ACOS((SIN(RADIANS(Lat1)) * SIN(RADIANS(Lat2))) + (COS(RADIANS(Lat1)) * COS(RADIANS(Lat2))) * (COS(RADIANS(Lon2) - RADIANS(Lon1)))) * 6371
 
   // Disable back navigation after confirmation
   useLayoutEffect(() => {
@@ -54,6 +51,7 @@ const OrderConfirmation = () => {
     return () => backHandler.remove();
   }, [startTimer]);
 
+  // Distance = ACOS((SIN(RADIANS(Lat1)) * SIN(RADIANS(Lat2))) + (COS(RADIANS(Lat1)) * COS(RADIANS(Lat2))) * (COS(RADIANS(Lon2) - RADIANS(Lon1)))) * 6371
 
   const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
     const R = 6371; // Earth's radius in km
@@ -69,7 +67,7 @@ const OrderConfirmation = () => {
       (Math.cos(dLat1) * Math.cos(dLat2)) *
         Math.cos(dLon2 - dLon1);
 
-    const c = Math.acos(a)*6371;
+    const c = Math.acos(a) * 6371;
     return c; // Distance in km
   };
 
@@ -122,7 +120,6 @@ const OrderConfirmation = () => {
       const speed = 50; // Speed in km/h
       const timeInHours = dist / speed;
       const timeInMinutes = timeInHours * 60; // Convert hours to minutes
-      setETA(timeInMinutes);
       const totalSeconds = Math.floor(timeInMinutes * 60);
       setInitialTime(totalSeconds);
       setTimeRemaining(totalSeconds); // Initialize timeRemaining
@@ -173,8 +170,6 @@ const OrderConfirmation = () => {
   // Progress bar width
   const progress = timeRemaining / initialTime; // Percentage of total time
   const progressWidth = `${progress * 100}%`;
-
-  //console.log(restaurantName);
 
   return (
     <View style={styles.container}>
