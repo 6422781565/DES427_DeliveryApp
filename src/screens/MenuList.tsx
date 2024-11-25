@@ -103,13 +103,9 @@ const MenuList: React.FC = () => {
 
   const goToCart = () => {
     navigation.navigate('OrderConfirmation', {
-      userLocation: {
-        Location_Latitude: "13.753",
-        Location_Longitude: "100.5",
-      },
       restaurantLocation: {
-        Location_Latitude: 13.7563,
-        Location_Longitude: 100.5018,
+        Location_Latitude: restaurantInfo?.Location_Latitude,
+        Location_Longitude: restaurantInfo?.Location_Longitude,
       },
       cartItems: cartItems, // Assuming cartItems is an array in your component
     });

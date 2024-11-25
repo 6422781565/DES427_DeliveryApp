@@ -23,19 +23,22 @@ const OrderConfirmation = () => {
     const R = 6371; // Earth's radius in km
     const toRadians = (deg: number) => (deg * Math.PI) / 180;
 
-    const dLat = toRadians(lat2 - lat1);
-    const dLon = toRadians(lon2 - lon1);
+    const dLat1 = toRadians(lat1);
+    const dLat2 = toRadians(lat2);
+    const dLon1 = toRadians(lon1);
+    const dLon2 = toRadians(lon2);
 
     const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(toRadians(lat1)) *
-        Math.cos(toRadians(lat2)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
+      (Math.sin(dLat1) * Math.sin(dLat2)) +
+      (Math.cos(dLat1) * Math.cos(dLat2)) *
+        Math.cos(dLon2 - dLon1);
 
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c; // Distance in km
+    const c = Math.acos(a)*6371;
+    return c; // Distance in km
   };
+
+  //acos(sin(lat1)*sin(lat2)+cos(lat1)*cos(lat2)*cos(lon2-lon1))*6371
+  // =ACOS((SIN(RADIANS(Lat1)) * SIN(RADIANS(Lat2))) + (COS(RADIANS(Lat1)) * COS(RADIANS(Lat2))) * (COS(RADIANS(Lon2) - RADIANS(Lon1)))) * 6371
 
   // Fetch user's location and address
   useEffect(() => {
@@ -83,12 +86,16 @@ const OrderConfirmation = () => {
         restaurantLocation.Location_Longitude
       );
       setDistance(dist);
+
+      console.log(restaurantLocation);
+      console.log(userLocation);
+      console.log(dist);
   
       const speed = 50; // Speed in km/h
       const timeInHours = dist / speed;
-      const timeInMinutes = Math.ceil(timeInHours * 60); // Convert hours to minutes
+      const timeInMinutes = timeInHours * 60; // Convert hours to minutes
       setETA(timeInMinutes);
-      const totalSeconds = timeInMinutes * 60;
+      const totalSeconds = Math.floor(timeInMinutes * 60);
       setInitialTime(totalSeconds);
       setTimeRemaining(totalSeconds); // Initialize timeRemaining
     }
