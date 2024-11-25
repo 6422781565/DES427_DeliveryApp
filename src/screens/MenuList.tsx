@@ -90,8 +90,14 @@ const MenuList: React.FC = () => {
     } else {
       setCartItems([...cartItems, { ...item, quantity: item.quantity }]);
     }
+  
+    // Reset the quantity of the item in the menuItems array
+    const updatedItems = menuItems.map((menuItem) =>
+      menuItem.id === item.id ? { ...menuItem, quantity: 0 } : menuItem
+    );
+    setMenuItems(updatedItems);
   };
-
+  
   const updateQuantity = (item, increment) => {
     const updatedItems = menuItems.map((menuItem) =>
       menuItem.id === item.id
@@ -100,6 +106,7 @@ const MenuList: React.FC = () => {
     );
     setMenuItems(updatedItems);
   };
+  
 
   const goToCart = () => {
     navigation.navigate('OrderConfirmation', {
