@@ -145,6 +145,8 @@ const OrderConfirmation = () => {
   const progress = timeRemaining / initialTime; // Percentage of total time
   const progressWidth = `${progress * 100}%`;
 
+  //console.log(restaurantName);
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
