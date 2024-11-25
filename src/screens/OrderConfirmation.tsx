@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, BackHandler } from 'react-native';
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import * as Location from 'expo-location';
 
@@ -18,6 +18,40 @@ const OrderConfirmation = () => {
   const [ETA, setETA] = useState(0); // Estimated Time in minutes
   const [initialTime, setInitialTime] = useState(0); // Initial time in seconds
   const [timeRemaining, setTimeRemaining] = useState(0); // Remaining time in seconds
+
+  // Disable back navigation after confirmation
+  useLayoutEffect(() => {
+    if (startTimer) {
+      navigation.setOptions({
+        headerLeft: () => null,
+        gestureEnabled: false,
+      });
+    } else {
+      navigation.setOptions({
+        headerLeft: undefined,
+        gestureEnabled: true,
+      });
+    }
+  }, [navigation, startTimer]);
+
+  // Handle hardware back button press on Android
+  useEffect(() => {
+    const onBackPress = () => {
+      if (startTimer) {
+        Alert.alert(
+          'Hold on!',
+          'You cannot go back during the countdown.',
+          [{ text: 'OK', onPress: () => null }],
+          { cancelable: false }
+        );
+        return true; // Prevent default behavior
+      }
+      return false; // Allow default behavior
+    };
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+    return () => backHandler.remove();
+  }, [startTimer]);
+
 
   const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
     const R = 6371; // Earth's radius in km
@@ -72,7 +106,6 @@ const OrderConfirmation = () => {
     fetchUserLocation();
   }, []);
   
-
   // Calculate Distance and ETA
   useEffect(() => {
     if (userLocation && restaurantLocation) {
@@ -116,6 +149,7 @@ const OrderConfirmation = () => {
     }
   }, [startTimer, timeRemaining, navigation]);
 
+
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -138,7 +172,6 @@ const OrderConfirmation = () => {
   const progress = timeRemaining / initialTime; // Percentage of total time
   const progressWidth = `${progress * 100}%`;
 
-  //console.log(restaurantName);
 
   return (
     <View style={styles.container}>
@@ -187,14 +220,20 @@ const OrderConfirmation = () => {
 
       {/* Confirm Button */}
       <TouchableOpacity
-        style={styles.confirmButton}
+        style={[
+          styles.confirmButton,
+          (startTimer || timeRemaining <= 0) && styles.disabledButton,
+        ]}
         onPress={() => {
-          if (timeRemaining > 0) {
+          if (!startTimer && timeRemaining > 0) {
             setStartTimer(true);
           }
         }}
+        disabled={startTimer || timeRemaining <= 0}
       >
-        <Text style={styles.confirmText}>Confirm Order</Text>
+        <Text style={styles.confirmText}>
+          {timeRemaining <= 0 ? 'Time Expired' : 'Confirm Order'}
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -292,6 +331,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
+  disabledButton: {
+    backgroundColor: '#ccc', 
+  },  
 });
 
 export default OrderConfirmation;
