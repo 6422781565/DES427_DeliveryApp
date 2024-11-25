@@ -10,8 +10,8 @@ import {
 } from "react-native";
 import { collection, query, where, getDocs, doc, getDoc } from "firebase/firestore";
 import { db } from "../config/firebaseConfig";
-import { Ionicons } from '@expo/vector-icons';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 const MenuList: React.FC = () => {
   const [menuItems, setMenuItems] = useState([]);
@@ -83,21 +83,21 @@ const MenuList: React.FC = () => {
     if (itemInCart) {
       const updatedCart = cartItems.map((cartItem) =>
         cartItem.id === item.id
-          ? { ...cartItem, quantity: item.quantity }
+          ? { ...cartItem, quantity: cartItem.quantity + item.quantity }
           : cartItem
       );
       setCartItems(updatedCart);
     } else {
       setCartItems([...cartItems, { ...item, quantity: item.quantity }]);
     }
-  
+
     // Reset the quantity of the item in the menuItems array
     const updatedItems = menuItems.map((menuItem) =>
       menuItem.id === item.id ? { ...menuItem, quantity: 0 } : menuItem
     );
     setMenuItems(updatedItems);
   };
-  
+
   const updateQuantity = (item, increment) => {
     const updatedItems = menuItems.map((menuItem) =>
       menuItem.id === item.id
@@ -106,10 +106,9 @@ const MenuList: React.FC = () => {
     );
     setMenuItems(updatedItems);
   };
-  
 
   const goToCart = () => {
-    navigation.navigate('OrderConfirmation', {
+    navigation.navigate("OrderConfirmation", {
       restaurantLocation: {
         Location_Latitude: restaurantInfo?.Location_Latitude,
         Location_Longitude: restaurantInfo?.Location_Longitude,
@@ -151,8 +150,10 @@ const MenuList: React.FC = () => {
 
       <TouchableOpacity style={styles.cartIcon} onPress={goToCart}>
         <Ionicons name="cart-outline" size={30} color="#000" />
-        {cartItems.length > 0 && (
-          <Text style={styles.cartCount}>{cartItems.length}</Text>
+        {cartItems.reduce((total, item) => total + item.quantity, 0) > 0 && (
+          <Text style={styles.cartCount}>
+            {cartItems.reduce((total, item) => total + item.quantity, 0)}
+          </Text>
         )}
       </TouchableOpacity>
 
@@ -272,12 +273,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#f9f9f9",
   },
   upperContainer: {
-    flex: 1, // Use flex to take up space
+    flex: 1,
     justifyContent: "flex-start",
     alignItems: "center",
   },
   lowerContainer: {
-    flex: 1, // Use flex to take up space
+    flex: 1,
     justifyContent: "flex-end",
     alignItems: "center",
   },
