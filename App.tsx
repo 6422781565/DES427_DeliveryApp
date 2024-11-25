@@ -55,7 +55,7 @@ const App: React.FC = () => {
           <Stack.Screen
             name="Done"
             component={Done}
-            options={{ title: "Thank you!" }}
+            options={{ headerShown: false }}
           />
         </Stack.Navigator>
         <StatusBar style="auto" />
