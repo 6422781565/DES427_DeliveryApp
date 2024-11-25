@@ -10,7 +10,7 @@ const firebaseConfig: {
   messagingSenderId: string; 
   appId: string; 
 } = {
-  apiKey: "AIzaSyBya7WtfS4nfA2vSBt1ZXPuE6D51RbSD-E",
+  apiKey: "AIzaSyBva7rWts4nfA2vSBiI2XPuE6D51RbSD-E",
   authDomain: "fooddeliveryapp-d843e.firebaseapp.com",
   projectId: "fooddeliveryapp-d843e",
   storageBucket: "fooddeliveryapp-d843e.appspot.com",

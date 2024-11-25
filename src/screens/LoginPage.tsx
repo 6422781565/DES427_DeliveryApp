@@ -17,28 +17,24 @@ const LoginPage: React.FC = () => {
   const { control, handleSubmit, getValues } = useForm<LoginFormData>();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  // const onSubmit = async (data: LoginFormData) => {
-  //   try {
-  //     const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
-  //     console.log("Login successful:", userCredential.user);
-
-  //     // Save user session to AsyncStorage
-  //     await AsyncStorage.setItem("userToken", userCredential.user.uid);
-  //     navigation.navigate("HomePage");
-
-  //   } catch (error) {
-  //       if (error instanceof Error) {
-  //         console.error("Login error:", error.message);
-  //         Alert.alert("Login Failed", "Invalid email or password: " + error.message);
-  //       } else {
-  //         console.error("Unexpected error:", error);
-  //         Alert.alert("An unexpected error occurred");
-  //       }
-  //   }
-  // };
-
   const onSubmit = async (data: LoginFormData) => {
-    navigation.navigate("HomePage");
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
+      console.log("Login successful:", userCredential.user);
+
+      // Save user session to AsyncStorage
+      await AsyncStorage.setItem("userToken", userCredential.user.uid);
+      navigation.navigate("HomePage");
+
+    } catch (error) {
+        if (error instanceof Error) {
+          console.error("Login error:", error.message);
+          Alert.alert("Login Failed", "Invalid email or password: " + error.message);
+        } else {
+          console.error("Unexpected error:", error);
+          Alert.alert("An unexpected error occurred");
+        }
+    }
   };
 
   // Handle forgot password
