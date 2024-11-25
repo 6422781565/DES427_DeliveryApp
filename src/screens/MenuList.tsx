@@ -33,7 +33,7 @@ const MenuList: React.FC = () => {
       try {
         const q = query(
           collection(db, "menuItems"),
-          where("RestaurantID", "==", mockRestaurantId)
+          where("RestaurantID", "==", parseInt(RestaurantID))
         );
         const querySnapshot = await getDocs(q);
 
@@ -55,7 +55,7 @@ const MenuList: React.FC = () => {
     // ดึงข้อมูลร้านอาหาร
     const fetchRestaurantInfo = async () => {
       try {
-        const docRef = doc(db, "restaurants", mockRestaurantId.toString());
+        const docRef = doc(db, "restaurants", RestaurantID.toString());
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
@@ -73,7 +73,7 @@ const MenuList: React.FC = () => {
 
     fetchMenuItems();
     fetchRestaurantInfo();
-  }, [mockRestaurantId]);
+  }, [RestaurantID]);
 
   const filteredMenuItems = menuItems.filter((item) =>
     item.Name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -84,12 +84,12 @@ const MenuList: React.FC = () => {
     if (itemInCart) {
       const updatedCart = cartItems.map((cartItem) =>
         cartItem.id === item.id
-          ? { ...cartItem, quantity: cartItem.quantity + 1 }
+          ? { ...cartItem, quantity: item.quantity }
           : cartItem
       );
       setCartItems(updatedCart);
     } else {
-      setCartItems([...cartItems, { ...item, quantity: 1 }]);
+      setCartItems([...cartItems, { ...item, quantity: item.quantity }]);
     }
   };
 
@@ -103,7 +103,17 @@ const MenuList: React.FC = () => {
   };
 
   const goToCart = () => {
-    navigation.navigate("CartScreen", { cartItems });
+    navigation.navigate('OrderConfirmation', {
+      userLocation: {
+        Location_Latitude: "13.753",
+        Location_Longitude: "100.5",
+      },
+      restaurantLocation: {
+        Location_Latitude: 13.7563,
+        Location_Longitude: 100.5018,
+      },
+      cartItems: cartItems, // Assuming cartItems is an array in your component
+    });
   };
 
   if (loading) {
