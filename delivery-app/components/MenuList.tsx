@@ -112,6 +112,12 @@ const MenuListScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      {/* ปุ่มย้อนกลับ */}
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Icon name="arrow-back" size={24} color="#E0632E" /> {/* สีลูกศร */}
+        <Text style={styles.backText}>Back</Text>
+      </TouchableOpacity>
+
       {restaurantInfo ? (
         <View style={styles.restaurantHeader}>
           <Image
@@ -132,8 +138,9 @@ const MenuListScreen = ({ navigation }) => {
         <Text>Restaurant info not available</Text>
       )}
 
+      {/* ไอคอนตะกร้า */}
       <TouchableOpacity style={styles.cartIcon} onPress={goToCart}>
-        <Icon name="cart-outline" size={30} color="#000" />
+        <Icon name="cart-outline" size={30} color="#E0632E" /> {/* สีตะกร้า */}
         {cartItems.length > 0 && (
           <Text style={styles.cartCount}>{cartItems.length}</Text>
         )}
@@ -184,6 +191,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     padding: 10,
+  },
+  backButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  backText: {
+    fontSize: 16,
+    marginLeft: 5,
+    color: "#E0632E", // สีข้อความปุ่ม Back
   },
   restaurantHeader: {
     flexDirection: "row",
@@ -276,7 +293,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     paddingHorizontal: 10,
-    color: "#E0632E",
+    color: "#E0632E", // สีปุ่มเพิ่มลดจำนวน
   },
   quantityText: {
     fontSize: 16,
@@ -284,7 +301,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   addButton: {
-    backgroundColor: "#E0632E",
+    backgroundColor: "#E0632E", // สีปุ่ม Add to Cart
     paddingVertical: 5,
     paddingHorizontal: 15,
     borderRadius: 5,
