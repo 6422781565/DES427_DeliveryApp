@@ -19,6 +19,8 @@ const OrderConfirmation = () => {
   const [initialTime, setInitialTime] = useState(0); // Initial time in seconds
   const [timeRemaining, setTimeRemaining] = useState(0); // Remaining time in seconds
 
+  // Distance = ACOS((SIN(RADIANS(Lat1)) * SIN(RADIANS(Lat2))) + (COS(RADIANS(Lat1)) * COS(RADIANS(Lat2))) * (COS(RADIANS(Lon2) - RADIANS(Lon1)))) * 6371
+
   const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
     const R = 6371; // Earth's radius in km
     const toRadians = (deg: number) => (deg * Math.PI) / 180;
@@ -36,9 +38,6 @@ const OrderConfirmation = () => {
     const c = Math.acos(a)*6371;
     return c; // Distance in km
   };
-
-  //acos(sin(lat1)*sin(lat2)+cos(lat1)*cos(lat2)*cos(lon2-lon1))*6371
-  // =ACOS((SIN(RADIANS(Lat1)) * SIN(RADIANS(Lat2))) + (COS(RADIANS(Lat1)) * COS(RADIANS(Lat2))) * (COS(RADIANS(Lon2) - RADIANS(Lon1)))) * 6371
 
   // Fetch user's location and address
   useEffect(() => {
@@ -86,10 +85,6 @@ const OrderConfirmation = () => {
         restaurantLocation.Location_Longitude
       );
       setDistance(dist);
-
-      console.log(restaurantLocation);
-      console.log(userLocation);
-      console.log(dist);
   
       const speed = 50; // Speed in km/h
       const timeInHours = dist / speed;
@@ -144,8 +139,6 @@ const OrderConfirmation = () => {
   // Progress bar width
   const progress = timeRemaining / initialTime; // Percentage of total time
   const progressWidth = `${progress * 100}%`;
-
-  //console.log(restaurantName);
 
   return (
     <View style={styles.container}>

@@ -9,16 +9,6 @@ const Done = () => {
 
   return (
     <View style={styles.container}>
-      {/* Header with Back Button */}
-      {/* <View style={styles.header}>
-        <TouchableOpacity onPress={() =>  navigation.dispatch(
-            CommonActions.reset({
-              index: 0,
-              routes: [{ name: 'HomePage' }], // Replace 'Home' with your homepage route name
-            }))}>
-        </TouchableOpacity>
-      </View> */}
-
       {/* Centered Completion Message */}
       <View style={styles.content}>
         <Text style={styles.mainText}>

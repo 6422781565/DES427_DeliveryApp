@@ -162,23 +162,6 @@ const HomePage: React.FC = () => {
           contentContainerStyle={styles.listContentContainer} 
         />
       </ScrollView>
-
-      {/* Fixed Footer
-      <View style={styles.footer}>
-        <TouchableOpacity style={styles.footerItem}>
-          <Ionicons name="home" size={24} color="#E0632E" />
-          <Text style={styles.footerTextActive}>Home</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.footerItem}>
-          <Ionicons name="clipboard-outline" size={24} color="#ccc" />
-          <Text style={styles.footerText}>Status</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.footerItem}>
-          <Ionicons name="menu-outline" size={24} color="#ccc" />
-          <Text style={styles.footerText}>Others</Text>
-        </TouchableOpacity>
-      </View> */}
-
     </View>
   );
 };
