@@ -11,9 +11,9 @@ import {
   Dimensions,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
-import updatedRestaurants from '../../data/Updated_Restaurants.json';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { useNavigation } from '@react-navigation/native';
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../config/firebaseConfig"; 
 
 interface Banner {
   id: string;
@@ -36,23 +36,10 @@ const bannerHeight = 200;
 
 const HomePage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const navigation = useNavigation();
   const bannerFlatListRef = useRef<FlatList>(null);
-  const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
-
-  const restaurants: Restaurant[] = updatedRestaurants.map((item) => ({
-    id: item.RestaurantID.toString(),
-    name: item.Name,
-    address: item.ShortLocation,
-    rating: item.Rating,
-    reviews: item.Reviews,
-    image: item.ImageURL,
-  }));
-
-  // Filter restaurants based on the search term
-  const filteredRestaurants = restaurants.filter((restaurant) =>
-    restaurant.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const [currentBannerIndex, setCurrentBannerIndex] = useState(0);  
 
   const banners: Banner[] = [
     { id: '1', image: require('../../assets/banner1.jpeg') },
@@ -62,6 +49,29 @@ const HomePage: React.FC = () => {
     { id: '5', image: require('../../assets/banner5.jpeg') },
   ];
 
+  useEffect(() => {
+    const fetchRestaurants = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "restaurants"));
+        const restaurantData = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setRestaurants(restaurantData);
+      } catch (error) {
+        console.error("Error fetching restaurants:", error);
+      }
+    };
+
+    fetchRestaurants();
+  }, []);
+
+  // Filter restaurants based on the search term
+  const filteredRestaurants = restaurants.filter(
+    (restaurant) =>
+      restaurant.Name && 
+      restaurant.Name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   // Auto-slide functionality
   useEffect(() => {
@@ -112,7 +122,7 @@ const HomePage: React.FC = () => {
           horizontal
           showsHorizontalScrollIndicator={false}
           pagingEnabled
-          ref={bannerFlatListRef} // Attach the ref to the FlatList
+          ref={bannerFlatListRef} 
           renderItem={({ item }) => (
             <View style={[styles.bannerWrapper]}>
               <Image
@@ -147,14 +157,14 @@ const HomePage: React.FC = () => {
               style={styles.restaurantCard}
               onPress={() => navigation.navigate('MenuList', { RestaurantID: item.id })}
             >
-              <Image source={{ uri: item.image }} style={styles.restaurantImage} />
+              <Image source={{ uri: item.ImageURL }} style={styles.restaurantImage} />
               <View style={styles.restaurantInfo}>
-                <Text style={styles.restaurantName}>{item.name}</Text>
-                <Text style={styles.restaurantAddress}>{item.address}</Text>
+                <Text style={styles.restaurantName}>{item.Name}</Text>
+                <Text style={styles.restaurantAddress}>{item.ShortLocation}</Text>
                 <View style={styles.ratingContainer}>
                   <Ionicons name="star" size={16} color="#ffcc00" />
-                  <Text style={styles.ratingText}>{item.rating}</Text>
-                  <Text style={styles.reviewsText}>({item.reviews})</Text>
+                  <Text style={styles.ratingText}>{item.Rating}</Text>
+                  <Text style={styles.reviewsText}>({item.Reviews})</Text>
                 </View>
               </View>
             </TouchableOpacity>
