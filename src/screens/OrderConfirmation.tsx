@@ -7,7 +7,7 @@ import * as Location from 'expo-location';
 const OrderConfirmation = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const { restaurantLocation, cartItems } = route.params;
+  const { restaurantLocation, cartItems, restaurantName } = route.params;
 
   const [userLocation, setUserLocation] = useState(null);
   const [address, setAddress] = useState(null);
@@ -119,7 +119,7 @@ const OrderConfirmation = () => {
 
     // Navigate to the 'Done' page when the timer hits zero
     if (startTimer && timeRemaining === 0) {
-      navigation.navigate('Done');
+      navigation.navigate('Done', {restaurantName});
     }
   }, [startTimer, timeRemaining, navigation]);
 
@@ -152,7 +152,7 @@ const OrderConfirmation = () => {
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.title}>Baiyoke Delivery</Text>
+          <Text style={styles.title}>{restaurantName}</Text>
         </View>
 
         {/* Order Summary */}

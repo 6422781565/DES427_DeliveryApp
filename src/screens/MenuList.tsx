@@ -108,6 +108,7 @@ const MenuList: React.FC = () => {
         Location_Longitude: restaurantInfo?.Location_Longitude,
       },
       cartItems: cartItems, // Assuming cartItems is an array in your component
+      restaurantName: restaurantInfo?.Name,
     });
     console.log(restaurantInfo?.Name);
     console.log(restaurantInfo?.Location_Longitude);
