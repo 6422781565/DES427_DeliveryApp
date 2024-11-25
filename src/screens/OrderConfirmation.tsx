@@ -311,11 +311,11 @@ const styles = StyleSheet.create({
   },
   progressBar: {
     height: '100%',
-    backgroundColor: '#f57c00',
+    backgroundColor: '#E0632E',
     borderRadius: 4,
   },
   confirmButton: {
-    backgroundColor: '#f57c00',
+    backgroundColor: '#E0632E',
     paddingVertical: 16,
     borderRadius: 8,
     alignItems: 'center',
