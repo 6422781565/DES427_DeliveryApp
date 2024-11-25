@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { useRoute, useNavigation } from '@react-navigation/native';
+import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 
 const OrderConfirmation = () => {
   const route = useRoute();
@@ -96,6 +96,8 @@ const OrderConfirmation = () => {
   // Progress bar width
   const progress = timeRemaining / initialTime; // Percentage of total time
   const progressWidth = `${progress * 100}%`;
+
+  console.log(restaurantName);
 
   return (
     <View style={styles.container}>

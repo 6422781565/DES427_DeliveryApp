@@ -113,6 +113,8 @@ const MenuList: React.FC = () => {
       },
       cartItems: cartItems, // Assuming cartItems is an array in your component
     });
+    console.log(restaurantInfo?.Name);
+    console.log(restaurantInfo?.Location_Longitude);
   };
 
   if (loading) {
@@ -164,24 +166,28 @@ const MenuList: React.FC = () => {
         data={filteredMenuItems}
         renderItem={({ item }) => (
           <View style={styles.menuItem}>
-            <Image source={{ uri: item.ImageURL }} style={styles.image} />
-            <Text style={styles.name}>{item.Name}</Text>
-            <Text style={styles.price}>{item.Price} ฿</Text>
-            <View style={styles.quantityContainer}>
-              <TouchableOpacity onPress={() => updateQuantity(item, -1)}>
-                <Text style={styles.quantityButton}>-</Text>
-              </TouchableOpacity>
-              <Text style={styles.quantityText}>{item.quantity}</Text>
-              <TouchableOpacity onPress={() => updateQuantity(item, 1)}>
-                <Text style={styles.quantityButton}>+</Text>
+            <View style={styles.upperContainer}>
+              <Image source={{ uri: item.ImageURL }} style={styles.image} />
+              <Text style={styles.name}>{item.Name}</Text>
+            </View>
+            <View style={styles.lowerContainer}>
+              <Text style={styles.price}>{item.Price} ฿</Text>
+              <View style={styles.quantityContainer}>
+                <TouchableOpacity onPress={() => updateQuantity(item, -1)}>
+                  <Text style={styles.quantityButton}>-</Text>
+                </TouchableOpacity>
+                <Text style={styles.quantityText}>{item.quantity}</Text>
+                <TouchableOpacity onPress={() => updateQuantity(item, 1)}>
+                  <Text style={styles.quantityButton}>+</Text>
+                </TouchableOpacity>
+              </View>
+              <TouchableOpacity
+                style={styles.addButton}
+                onPress={() => addToCart(item)}
+              >
+                <Text style={styles.addButtonText}>Add to Cart</Text>
               </TouchableOpacity>
             </View>
-            <TouchableOpacity
-              style={styles.addButton}
-              onPress={() => addToCart(item)}
-            >
-              <Text style={styles.addButtonText}>Add to Cart</Text>
-            </TouchableOpacity>
           </View>
         )}
         keyExtractor={(item) => item.id.toString()}
@@ -262,6 +268,16 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 10,
     backgroundColor: "#f9f9f9",
+  },
+  upperContainer: {
+    flex: 1, // Use flex to take up space
+    justifyContent: "flex-start",
+    alignItems: "center",
+  },
+  lowerContainer: {
+    flex: 1, // Use flex to take up space
+    justifyContent: "flex-end",
+    alignItems: "center",
   },
   image: {
     width: 120,
