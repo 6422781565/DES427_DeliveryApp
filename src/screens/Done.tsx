@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   BacktoHomeButton: {
-    backgroundColor: '#f57c00',
+    backgroundColor: '#E0632E',
     paddingVertical: 16,
     borderRadius: 8,
     alignItems: 'center',
