@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
+import * as Location from 'expo-location';
+
 
 const OrderConfirmation = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const { userLocation, restaurantLocation, cartItems } = route.params;
+  const { restaurantLocation, cartItems } = route.params;
+
+  const [userLocation, setUserLocation] = useState(null);
+  const [address, setAddress] = useState(null);
+  const [locationError, setLocationError] = useState(null);
 
   const [startTimer, setStartTimer] = useState(false);
   const [distance, setDistance] = useState(0); // Distance in km
@@ -13,9 +19,9 @@ const OrderConfirmation = () => {
   const [initialTime, setInitialTime] = useState(0); // Initial time in seconds
   const [timeRemaining, setTimeRemaining] = useState(0); // Remaining time in seconds
 
-  const calculateDistance = (lat1, lon1, lat2, lon2) => {
+  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
     const R = 6371; // Earth's radius in km
-    const toRadians = (deg) => (deg * Math.PI) / 180;
+    const toRadians = (deg: number) => (deg * Math.PI) / 180;
 
     const dLat = toRadians(lat2 - lat1);
     const dLon = toRadians(lon2 - lon1);
@@ -31,28 +37,63 @@ const OrderConfirmation = () => {
     return R * c; // Distance in km
   };
 
-  // Calculate ETA and initialize timeRemaining
+  // Fetch user's location and address
   useEffect(() => {
-    const { Location_Latitude: userLat, Location_Longitude: userLon } = userLocation;
-    const { Location_Latitude: restLat, Location_Longitude: restLon } = restaurantLocation;
+    const fetchUserLocation = async () => {
+      try {
+        // Request permission to access location
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+          setLocationError('Permission to access location was denied');
+          return;
+        }
+  
+        // Get the current location
+        const location = await Location.getCurrentPositionAsync({});
+        setUserLocation(location);
+  
+        // Reverse geocode to get address
+        const addressArray = await Location.reverseGeocodeAsync({
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+        });
+  
+        if (addressArray.length > 0) {
+          const { name, street, city, region, country } = addressArray[0];
+          setAddress(`${name || ''} ${street || ''}, ${city || ''}, ${region || ''}, ${country || ''}`);
+        } else {
+          setAddress('Address not found');
+        }
+      } catch (error) {
+        setLocationError('Failed to fetch location');
+      }
+    };
+  
+    fetchUserLocation();
+  }, []);
+  
 
-    const dist = calculateDistance(
-      parseFloat(userLat),
-      parseFloat(userLon),
-      restLat,
-      restLon
-    );
-    setDistance(dist);
-
-    const speed = 50; // Speed in km/h
-    const timeInHours = dist / speed;
-    const timeInMinutes = Math.ceil(timeInHours * 60); // Convert hours to minutes
-    setETA(timeInMinutes);
-    const totalSeconds = timeInMinutes * 60;
-    setInitialTime(totalSeconds);
-    setTimeRemaining(totalSeconds); // Initialize timeRemaining
+  // Calculate Distance and ETA
+  useEffect(() => {
+    if (userLocation && restaurantLocation) {
+      const dist = calculateDistance(
+        userLocation.coords.latitude,
+        userLocation.coords.longitude,
+        restaurantLocation.Location_Latitude,
+        restaurantLocation.Location_Longitude
+      );
+      setDistance(dist);
+  
+      const speed = 50; // Speed in km/h
+      const timeInHours = dist / speed;
+      const timeInMinutes = Math.ceil(timeInHours * 60); // Convert hours to minutes
+      setETA(timeInMinutes);
+      const totalSeconds = timeInMinutes * 60;
+      setInitialTime(totalSeconds);
+      setTimeRemaining(totalSeconds); // Initialize timeRemaining
+    }
   }, [userLocation, restaurantLocation]);
-
+  
   // Timer logic
   useEffect(() => {
     if (startTimer && timeRemaining > 0) {
@@ -125,8 +166,10 @@ const OrderConfirmation = () => {
         {/* Location */}
         <View style={styles.card}>
           <Text style={styles.sectionTitle}>Your Location</Text>
-          <Text>35/26 Thammasat University Khlong Neung Khlong Luang 12120</Text>
+          {address ? <Text>{address}</Text> : <Text>Fetching address...</Text>}
+          {locationError && <Text style={{ color: 'red' }}>{locationError}</Text>}
         </View>
+
 
         {/* ETA */}
         <View style={styles.card}>
