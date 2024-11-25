@@ -15,19 +15,19 @@ import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 
 const MenuList: React.FC = () => {
   const [menuItems, setMenuItems] = useState([]);
-  const [restaurantInfo, setRestaurantInfo] = useState(null); // เก็บข้อมูลร้านอาหาร
+  const [restaurantInfo, setRestaurantInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [cartItems, setCartItems] = useState([]); // รายการในตะกร้า
+  const [cartItems, setCartItems] = useState([]);
   const navigation = useNavigation();
   const route = useRoute();
   const { RestaurantID } = route.params;
 
   useEffect(() => {
-    // รีเซ็ตตะกร้าสินค้าเมื่อเปลี่ยนร้านอาหาร
+    // Reset cart when the restaurant is changed
     setCartItems([]);
 
-    // ดึงข้อมูลเมนู
+    // Fetch Menu Items
     const fetchMenuItems = async () => {
       try {
         const q = query(
@@ -51,7 +51,7 @@ const MenuList: React.FC = () => {
       }
     };
 
-    // ดึงข้อมูลร้านอาหาร
+    // Fetch Restaurant Info
     const fetchRestaurantInfo = async () => {
       try {
         const docRef = doc(db, "restaurants", RestaurantID.toString());
@@ -103,18 +103,13 @@ const MenuList: React.FC = () => {
 
   const goToCart = () => {
     navigation.navigate('OrderConfirmation', {
-      userLocation: {
-        Location_Latitude: "13.753",
-        Location_Longitude: "100.5",
-      },
       restaurantLocation: {
-        Location_Latitude: 13.7563,
-        Location_Longitude: 100.5018,
+        Location_Latitude: restaurantInfo?.Location_Latitude,
+        Location_Longitude: restaurantInfo?.Location_Longitude,
       },
-      cartItems: cartItems, // Assuming cartItems is an array in your component
+      cartItems: cartItems,
+      restaurantName: restaurantInfo?.Name,
     });
-    console.log(restaurantInfo?.Name);
-    console.log(restaurantInfo?.Location_Longitude);
   };
 
   if (loading) {

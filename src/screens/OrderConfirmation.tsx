@@ -7,7 +7,7 @@ import * as Location from 'expo-location';
 const OrderConfirmation = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const { restaurantLocation, cartItems } = route.params;
+  const { restaurantLocation, cartItems, restaurantName } = route.params;
 
   const [userLocation, setUserLocation] = useState(null);
   const [address, setAddress] = useState(null);
@@ -18,6 +18,8 @@ const OrderConfirmation = () => {
   const [ETA, setETA] = useState(0); // Estimated Time in minutes
   const [initialTime, setInitialTime] = useState(0); // Initial time in seconds
   const [timeRemaining, setTimeRemaining] = useState(0); // Remaining time in seconds
+
+  // Distance = ACOS((SIN(RADIANS(Lat1)) * SIN(RADIANS(Lat2))) + (COS(RADIANS(Lat1)) * COS(RADIANS(Lat2))) * (COS(RADIANS(Lon2) - RADIANS(Lon1)))) * 6371
 
   // Disable back navigation after confirmation
   useLayoutEffect(() => {
@@ -57,18 +59,18 @@ const OrderConfirmation = () => {
     const R = 6371; // Earth's radius in km
     const toRadians = (deg: number) => (deg * Math.PI) / 180;
 
-    const dLat = toRadians(lat2 - lat1);
-    const dLon = toRadians(lon2 - lon1);
+    const dLat1 = toRadians(lat1);
+    const dLat2 = toRadians(lat2);
+    const dLon1 = toRadians(lon1);
+    const dLon2 = toRadians(lon2);
 
     const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(toRadians(lat1)) *
-        Math.cos(toRadians(lat2)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
+      (Math.sin(dLat1) * Math.sin(dLat2)) +
+      (Math.cos(dLat1) * Math.cos(dLat2)) *
+        Math.cos(dLon2 - dLon1);
 
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c; // Distance in km
+    const c = Math.acos(a)*6371;
+    return c; // Distance in km
   };
 
   // Fetch user's location and address
@@ -119,9 +121,9 @@ const OrderConfirmation = () => {
   
       const speed = 50; // Speed in km/h
       const timeInHours = dist / speed;
-      const timeInMinutes = Math.ceil(timeInHours * 60); // Convert hours to minutes
+      const timeInMinutes = timeInHours * 60; // Convert hours to minutes
       setETA(timeInMinutes);
-      const totalSeconds = timeInMinutes * 60;
+      const totalSeconds = Math.floor(timeInMinutes * 60);
       setInitialTime(totalSeconds);
       setTimeRemaining(totalSeconds); // Initialize timeRemaining
     }
@@ -145,7 +147,7 @@ const OrderConfirmation = () => {
 
     // Navigate to the 'Done' page when the timer hits zero
     if (startTimer && timeRemaining === 0) {
-      navigation.navigate('Done');
+      navigation.navigate('Done', {restaurantName});
     }
   }, [startTimer, timeRemaining, navigation]);
 
@@ -172,13 +174,14 @@ const OrderConfirmation = () => {
   const progress = timeRemaining / initialTime; // Percentage of total time
   const progressWidth = `${progress * 100}%`;
 
+  //console.log(restaurantName);
 
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.title}>Baiyoke Delivery</Text>
+          <Text style={styles.title}>{restaurantName}</Text>
         </View>
 
         {/* Order Summary */}

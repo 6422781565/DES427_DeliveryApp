@@ -1,26 +1,18 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useNavigation, CommonActions } from '@react-navigation/native'; // Assuming navigation is used
+import { useNavigation, useRoute } from '@react-navigation/native'; // Assuming navigation is used
 
 const Done = () => {
+  const route = useRoute();
   const navigation = useNavigation();
+  const { restaurantName } = route.params;
 
   return (
     <View style={styles.container}>
-      {/* Header with Back Button */}
-      {/* <View style={styles.header}>
-        <TouchableOpacity onPress={() =>  navigation.dispatch(
-            CommonActions.reset({
-              index: 0,
-              routes: [{ name: 'HomePage' }], // Replace 'Home' with your homepage route name
-            }))}>
-        </TouchableOpacity>
-      </View> */}
-
       {/* Centered Completion Message */}
       <View style={styles.content}>
         <Text style={styles.mainText}>
-          Your order is completed
+          Your order from {restaurantName} is completed
         </Text>
         <Text style={styles.subText}>Thank you for using our delivery app!</Text>
       </View>

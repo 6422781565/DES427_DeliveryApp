@@ -1,6 +1,0 @@
-OrderID,UserID,RestaurantID,ItemsOrdered,TotalAmount,EstimatedDeliveryTime,Status
-1,1,1,"Pad Thai, Grilled Prawns",600,2024-11-03 13:00:00,in progress
-2,2,2,"Steak, Sashimi",650,2024-11-03 13:15:00,in progress
-3,3,3,"Tom Yum, Green Curry",520,2024-11-03 13:30:00,completed
-4,4,4,"Fried Rice, Papaya Salad",330,2024-11-03 13:45:00,in progress
-5,5,5,"Crispy Pork, BBQ Chicken",590,2024-11-03 14:00:00,completed
