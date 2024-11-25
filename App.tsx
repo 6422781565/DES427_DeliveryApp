@@ -30,32 +30,49 @@ const App: React.FC = () => {
           <Stack.Screen
             name="LoginPage"
             component={LoginPage}
-            options={{ headerShown: false }}
+            options={{
+              headerShown: false,
+              gestureEnabled: false
+             }}
           />
           <Stack.Screen
             name="SignUpPage"
             component={SignUpPage}
-            options={{ title: "Sign Up" }}
+            options={{
+              title: "Sign Up",
+              gestureEnabled: false
+            }}
           />
           <Stack.Screen
             name="HomePage"
             component={HomePage}
-            options={{ headerShown: false }}
+            options={{
+              headerShown: false,
+              gestureEnabled: false
+            }}
           />
           <Stack.Screen
             name="MenuList"
             component={MenuList}
-            options={{ title: "Restaurant" }}
+            options={{
+              title: "Restaurant",
+              gestureEnabled: false
+            }}
           />
           <Stack.Screen
             name="OrderConfirmation"
             component={OrderConfirmation}
-            options={{ title: "Cart" }}
+            options={{title: "Cart",
+              gestureEnabled: false
+            }}
           />
           <Stack.Screen
             name="Done"
             component={Done}
-            options={{ headerShown: false }}
+            options={{
+              headerShown: false,
+              gestureEnabled: false
+            }}
           />
         </Stack.Navigator>
         <StatusBar style="auto" />

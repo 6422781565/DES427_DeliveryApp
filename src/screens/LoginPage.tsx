@@ -20,7 +20,7 @@ const LoginPage: React.FC = () => {
   const onSubmit = async (data: LoginFormData) => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
-      console.log("Login successful:", userCredential.user);
+      // console.log("Login successful:", userCredential.user);
 
       // Save user session to AsyncStorage
       await AsyncStorage.setItem("userToken", userCredential.user.uid);
